@@ -1,9 +1,30 @@
 class User < ApplicationRecord
-  def name=(name)
-    @name = name
+  
+  class Tax
+    def self.rate
+      1.08
+    end
+  end
+  
+  module PriceHolder
+    def total_price
+      price * Tax.rate
+    end
   end
 
-  def name
-    @name
+  class Product
+    include PriceHolder
+
+    attr_accessor :price
+  end
+
+  class OrderedItem
+    include PriceHolder
+
+    attr_accessor :unit_price, :volume
+
+    def price
+      unit_price * volume
+    end
   end
 end
